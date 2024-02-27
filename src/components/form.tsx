@@ -1,6 +1,7 @@
 "use client"
 
 import { FormEvent, MouseEvent, useState } from "react";
+import { toast } from "react-toastify";
 
 export function InputField({ value, label, placeholder, id, name, type, onChange, isRequired }: any) {
     const handleChange = (e: any) => {
@@ -24,11 +25,11 @@ export function InputField({ value, label, placeholder, id, name, type, onChange
     );
 }
 export default function Form({ handleSubmit, children }: any) {
-
     return (
         <form className="space-y-4" onSubmit={(e) => {
             e.preventDefault()
             handleSubmit()
+            // toast.success("Success")
         }} >
             {...children}
         </form>

@@ -1,10 +1,11 @@
 "use client"
-import Form, { InputField } from '@/components/form';
+import { InputField } from '@/components/form';
 import Modal from '@/components/modal';
 import { LoggedInContext } from '@/utils/authContext';
-import { getWalletData, logout } from '@/utils/services';
+import { getWalletData, logout, payViaEmail } from '@/utils/services';
 import Link from 'next/link'
 import { useContext, useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 
 export default function Dashboard() {
     const [wallet, setWallet] = useState<any>()
@@ -13,12 +14,11 @@ export default function Dashboard() {
     const [payerEmail, setPayerEmail] = useState("")
     const { loggedInState, setLoggedInState } = useContext(LoggedInContext)
 
+    const subId = loggedInState.user?.user_metadata?.subId
     const getWallet = async () => {
         try {
-            const subId = loggedInState.user?.user_metadata?.subId
             const result = await getWalletData({ subId: subId })
             const data = await result.json()
-            console.log(data)
             if (result.status === 200 && data.result.data[0].owner === subId)
                 setWallet(data.result.data[0]);
             else
@@ -27,13 +27,28 @@ export default function Dashboard() {
             console.log(error);
         }
     }
-    const handleInitTrasaction = () => {
-        alert(amount)
+
+    const handleSendMoney = async () => {
+        try {
+            const result = await payViaEmail({ subId, amount, payerEmail })
+            const data = await result.json()
+            console.log(data)
+            if (data.status === "success") {
+                toast.success("Payment successfull")
+                window.open(data.data.paymentLink, "_blank")
+                setOpen(false)
+            }
+            if (data.status === "failed")
+                toast.error(data.message)
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     const handleLogout = async () => {
         const res = await logout()
         if (res.status === 200) {
+            toast.success("Logout success")
             setLoggedInState({
                 isLoggedIn: false,
                 user: {},
@@ -82,7 +97,6 @@ export default function Dashboard() {
                                     <Link href="/auth/signup">Signup</Link>
                                 </li>
                             </ul>
-
                     }
 
                 </ul>
@@ -117,10 +131,14 @@ export default function Dashboard() {
                                 <p className="text-white">Send</p>
                             </div>
                             {
-                                isOpen && <Modal handleSubmit={handleInitTrasaction} setOpen={setOpen} title="Create a payment" >
+                                isOpen &&
+                                <Modal handleSubmit={handleSendMoney} setOpen={setOpen} title="Create a payment" >
                                     <InputField onChange={setAmount} value={amount} label="Amount" type="text" name="amount" id="amount" placeholder="" isRequired={true} />
                                     <InputField onChange={setPayerEmail} value={payerEmail} label="Payer email" type="email" name="email" id="email" placeholder="name@pay.com" isRequired={true} />
-                                    <button className="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Initiate request</button>
+                                    <button className="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Send</button>
+                                    <div className=' text-center text-white pt-1'>
+                                        <span>Pay via bank?</span>
+                                    </div>
                                 </Modal>
                             }
                             <div className="flex-1 bg-gradient-to-r from-orange-300 to-pink-600 rounded-lg flex flex-col items-center justify-center p-4 space-y-2 border border-gray-200 m-2">
