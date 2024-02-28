@@ -19,6 +19,7 @@ export default function Dashboard() {
         try {
             const result = await getWalletData({ subId: subId })
             const data = await result.json()
+            console.log(subId)
             if (result.status === 200 && data.result.data[0].owner === subId)
                 setWallet(data.result.data[0]);
             else

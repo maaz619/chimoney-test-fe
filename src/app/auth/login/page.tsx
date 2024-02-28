@@ -6,7 +6,7 @@ import { LoggedInContext } from "@/utils/authContext";
 import { login } from "@/utils/services";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 
 export default function Login() {
     const router = useRouter()
@@ -19,6 +19,7 @@ export default function Login() {
             const res = await login({ email, password })
             const result = await res.json()
             if (res.ok) {
+                localStorage.setItem('token', result.token)
                 toast.success("Login Success")
                 console.log(result)
                 setLoggedInState({ ...loggedInState, user: result.user })

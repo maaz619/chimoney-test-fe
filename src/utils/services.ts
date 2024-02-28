@@ -1,5 +1,5 @@
 
-const BASE_URL = process.env.NODE_ENV === 'production' ? "https://chimoney-be-106f369a3077.herokuapp.com/" : "http://localhost:8000/"
+const BASE_URL = process.env.NODE_ENV === 'production' ? "https://chimoney-be-106f369a3077.herokuapp.com/" : "http://localhost:9000/"
 
 export const getWalletData = async (body: any): Promise<Response> => {
     const res = await fetch(BASE_URL + 'getWallet', {
@@ -50,6 +50,7 @@ export const payViaEmail = async (body: any) => {
 }
 
 export const logout = async () => {
+    localStorage.removeItem('token')
     return await fetch(BASE_URL + "logout", {
         method: "POST",
         credentials: "include"

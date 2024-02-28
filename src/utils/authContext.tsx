@@ -1,6 +1,6 @@
 "use client"
 import { Dispatch, SetStateAction, createContext, useEffect, useState } from "react";
-import { getCookie } from 'cookies-next';
+// import { getCookie } from 'cookies-next';
 import { getMe } from "./services";
 
 export interface LoggedInState {
@@ -24,15 +24,17 @@ export const LoggedInStateProvider = ({ children }: any) => {
         token: '',
         user: {}
     })
-    const jwt = getCookie('jwt')
+    const jwt = localStorage.getItem('token')
 
     useEffect(() => {
         // Retrieve JWT token from cookies
         if (jwt && (!loggedInState?.isLoggedIn || !loggedInState.user)) {
-            getMe({ token: jwt }).then(userData => userData.json()).then(user =>
+            getMe({ token: jwt }).then(userData => userData.json()).then(user => {
+                console.log(user)
                 setLoggedInState({
                     ...loggedInState, isLoggedIn: true, token: jwt, user
-                })).catch(err => console.log(err))
+                })
+            }).catch(err => console.log(err))
         }
 
     }, [jwt])
