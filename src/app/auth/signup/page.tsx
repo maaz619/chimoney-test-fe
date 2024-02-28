@@ -20,7 +20,7 @@ export default function Signup() {
             console.log(res)
             if (res.ok) {
                 if (typeof window !== 'undefined')
-                    localStorage.setItem('token', result?.doc.session.access_token)
+                    window.localStorage.setItem('token', result?.doc.session.access_token)
                 setLoggedInState({
                     isLoggedIn: true,
                     user: result?.doc.user,

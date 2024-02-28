@@ -26,7 +26,7 @@ export const LoggedInStateProvider = ({ children }: any) => {
     })
     let jwt: any;
     if (typeof window !== 'undefined') {
-        jwt = localStorage.getItem('token')
+        jwt = window.localStorage.getItem('token')
     }
 
     useEffect(() => {

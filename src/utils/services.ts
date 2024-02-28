@@ -52,7 +52,7 @@ export const payViaEmail = async (body: any) => {
 export const logout = async () => {
     if (typeof window !== 'undefined') {
         // Perform localStorage action
-        localStorage.removeItem('token')
+        window.localStorage.removeItem('token')
     }
     return await fetch(BASE_URL + "logout", {
         method: "POST",

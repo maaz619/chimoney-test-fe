@@ -21,7 +21,7 @@ export default function Login() {
             if (res.ok) {
                 if (typeof window !== 'undefined') {
                     // Perform localStorage action
-                    localStorage.setItem('token', result.token)
+                    window.localStorage.setItem('token', result.token)
                 }
                 toast.success("Login Success")
                 console.log(result)
