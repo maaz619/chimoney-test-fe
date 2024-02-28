@@ -24,7 +24,10 @@ export const LoggedInStateProvider = ({ children }: any) => {
         token: '',
         user: {}
     })
-    const jwt = localStorage.getItem('token')
+    let jwt: any;
+    if (typeof window !== 'undefined') {
+        jwt = localStorage.getItem('token')
+    }
 
     useEffect(() => {
         // Retrieve JWT token from cookies

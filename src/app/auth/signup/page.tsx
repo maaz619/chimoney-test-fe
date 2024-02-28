@@ -19,7 +19,8 @@ export default function Signup() {
             const result = await res.json()
             console.log(res)
             if (res.ok) {
-                localStorage.setItem('token', result?.doc.session.access_token)
+                if (typeof window !== 'undefined')
+                    localStorage.setItem('token', result?.doc.session.access_token)
                 setLoggedInState({
                     isLoggedIn: true,
                     user: result?.doc.user,
